@@ -1,1 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI College Companion</title>
+  <!-- Google Fonts & Icons (requires internet for fonts/icons in browser) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="nav glass">
+    <div class="nav-inner">
+      <div class="brand-wrap">
+        <img src="assets/logo.svg" alt="logo" class="logo" />
+        <div>
+          <h1 class="brand">AI College Companion</h1>
+          <div class="tag">Smart dashboard for students</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="themeToggle" class="btn small">Dark</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header class="hero glass">
+      <div class="hero-left">
+        <h2>Make study simple. Study smarter.</h2>
+        <p class="muted">Timetable • Attendance • GPA • Notes • AI Study Suggestions</p>
+        <div class="hero-cta">
+          <button class="btn" onclick="showSection('timetable')"><i class="fa fa-calendar"></i> Generate Timetable</button>
+          <button class="btn ghost" onclick="showSection('ai')"><i class="fa fa-robot"></i> AI Suggestion</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="stats glass">
+          <div><div class="stat-num" id="statCourses">0</div><div class="stat-label">Courses</div></div>
+          <div><div class="stat-num" id="statNotes">0</div><div class="stat-label">Notes</div></div>
+          <div><div class="stat-num" id="statTasks">0</div><div class="stat-label">Tasks</div></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="card glass" id="card-attendance" onclick="showSection('attendance')">
+        <div class="card-icon"><i class="fa fa-percent"></i></div>
+        <div><h3>Attendance</h3><p>Calculate attendance & get alerts</p></div>
+      </div>
+      <div class="card glass" id="card-gpa" onclick="showSection('gpa')">
+        <div class="card-icon"><i class="fa fa-star"></i></div>
+        <div><h3>GPA Calculator</h3><p>Compute semester GPA and CGPA</p></div>
+      </div>
+      <div class="card glass" id="card-timetable" onclick="showSection('timetable')">
+        <div class="card-icon"><i class="fa fa-calendar-days"></i></div>
+        <div><h3>Timetable</h3><p>Auto-generate weekly timetable</p></div>
+      </div>
+      <div class="card glass" id="card-notes" onclick="showSection('notes')">
+        <div class="card-icon"><i class="fa fa-book-open"></i></div>
+        <div><h3>Notes</h3><p>Save and categorize quick notes</p></div>
+      </div>
+      <div class="card glass" id="card-tasks" onclick="showSection('tasks')">
+        <div class="card-icon"><i class="fa fa-check-circle"></i></div>
+        <div><h3>Tasks</h3><p>Reminders and to-dos</p></div>
+      </div>
+      <div class="card glass" id="card-ai" onclick="showSection('ai')">
+        <div class="card-icon"><i class="fa fa-brain"></i></div>
+        <div><h3>AI Study Tool</h3><p>Get a study plan for weak topics</p></div>
+      </div>
+    </section>
+
+    <section id="workarea" class="workarea">
+      <div id="welcome" class="panel glass">
+        <h3>Welcome, Tanvir 👋</h3>
+        <p class="muted">This polished demo is ready for presentation. Click any card to open a module.</p>
+      </div>
+
+      <div id="attendance" class="panel hidden glass">
+        <h3><i class="fa fa-percent"></i> Attendance Calculator</h3>
+        <div class="form-row">
+          <label>Classes Attended</label>
+          <input type="number" id="attended" min="0" value="0" />
+        </div>
+        <div class="form-row">
+          <label>Total Classes</label>
+          <input type="number" id="total" min="0" value="0" />
+        </div>
+        <div class="form-row">
+          <button class="btn" onclick="calcAttendanceUI()">Calculate</button>
+          <button class="btn ghost" onclick="document.getElementById('attendanceResult').innerHTML='';">Clear</button>
+        </div>
+        <div id="attendanceResult" class="result"></div>
+      </div>
+
+      <div id="gpa" class="panel hidden glass">
+        <h3><i class="fa fa-star"></i> GPA / CGPA Calculator</h3>
+        <p class="muted">Add course marks and credits, then compute GPA.</p>
+        <div class="form-row small">
+          <input id="courseName" placeholder="Course name (optional)" />
+          <input id="courseMarks" type="number" placeholder="Marks (0-100)" min="0" max="100" />
+          <input id="courseCredits" type="number" placeholder="Credits" min="0" />
+          <button class="btn small" onclick="addCourse()">Add</button>
+        </div>
+        <div id="coursesList" class="list"></div>
+        <div class="form-row">
+          <button class="btn" onclick="computeGPA()">Compute GPA</button>
+          <button class="btn ghost" onclick="clearCourses()">Clear</button>
+        </div>
+        <div id="gpaResult" class="result"></div>
+      </div>
+
+      <div id="timetable" class="panel hidden glass">
+        <h3><i class="fa fa-calendar-days"></i> Timetable Generator</h3>
+        <p class="muted">Add subjects and hours, generate a weekly grid.</p>
+        <div class="form-row small">
+          <input id="subName" placeholder="Subject name" />
+          <input id="subHours" type="number" placeholder="Hours / week" min="1" value="2" />
+          <button class="btn small" onclick="addSubject()">Add</button>
+        </div>
+        <div id="subjectsList" class="list"></div>
+        <div class="form-row">
+          <button class="btn" onclick="generateTimetable()">Generate Timetable</button>
+          <button class="btn ghost" onclick="clearSubjects()">Clear</button>
+        </div>
+        <div id="timetableGrid" class="timetable"></div>
+      </div>
+
+      <div id="notes" class="panel hidden glass">
+        <h3><i class="fa fa-book-open"></i> Notes Organizer</h3>
+        <div class="form-row small">
+          <input id="noteTitle" placeholder="Title" />
+          <input id="noteContent" placeholder="Quick note / summary" />
+          <button class="btn small" onclick="saveNote()">Save Note</button>
+        </div>
+        <div id="notesList" class="list"></div>
+      </div>
+
+      <div id="tasks" class="panel hidden glass">
+        <h3><i class="fa fa-check-circle"></i> Tasks / Reminders</h3>
+        <div class="form-row small">
+          <input id="taskText" placeholder="Task description" />
+          <button class="btn small" onclick="addTask()">Add Task</button>
+        </div>
+        <div id="tasksList" class="list"></div>
+      </div>
+
+      <div id="ai" class="panel hidden glass">
+        <h3><i class="fa fa-brain"></i> AI Study Suggestion</h3>
+        <p class="muted">Type your weak topic and get a friendly study plan.</p>
+        <div class="form-row">
+          <input id="aiInput" placeholder="e.g., I'm weak in math" />
+          <button class="btn" onclick="getAISuggestion()">Get Suggestion</button>
+        </div>
+        <div id="aiReply" class="result"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>AI College Companion — Demo build • Built by Tanvir • 2025-11-14</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
 
