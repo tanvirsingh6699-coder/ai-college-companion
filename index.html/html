@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI College Companion — Tanvir</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-gradient: radial-gradient(circle at top, #1e40af 0, transparent 55%),
+                     radial-gradient(circle at bottom, #7e22ce 0, transparent 55%);
+      --surface: rgba(15, 23, 42, 0.85);
+      --surface-soft: rgba(15, 23, 42, 0.65);
+      --border-subtle: rgba(148, 163, 184, 0.18);
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.18);
+      --accent-strong: #a855f7;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --text-strong: #f9fafb;
+      --danger: #f97373;
+      --success: #22c55e;
+      --shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.85);
+      --radius-xl: 22px;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.28s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-main);
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1240px;
+      border-radius: 26px;
+      background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.06), transparent 60%),
+                  radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      overflow: hidden;
+      backdrop-filter: blur(22px);
+      position: relative;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(120deg, rgba(99, 102, 241, 0.08), transparent, rgba(244, 244, 245, 0.02));
+      mix-blend-mode: screen;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .app-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left column */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .brand-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.9));
+      border-radius: 24px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-card::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.35), transparent 55%);
+      top: -120px;
+      right: -60px;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.4));
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .logo-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(129, 140, 248, 0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      background: radial-gradient(circle at 20% 20%, #6366f1, #0f172a);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.8);
+    }
+
+    .theme-toggle {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      cursor: default;
+    }
+
+    .theme-toggle span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      font-size: 0.65rem;
+      color: white;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent-strong);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .hero-title {
+      font-family: "Poppins", system-ui;
+      font-weight: 600;
+      font-size: 1.6rem;
+      line-height: 1.2;
+      color: var(--text-strong);
+      margin-bottom: 6px;
+    }
+
+    .hero-sub {
+      font-size: 0.92rem;
+      color: var(--text-soft);
+      max-width: 95%;
+      margin-bottom: 10px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+      font-size: 0.75rem;
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.88);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .pill i {
+      font-size: 0.75rem;
+      color: var(--accent-strong);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-primary, .btn-ghost {
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      box-shadow: 0 16px 40px rgba(79, 70, 229, 0.6);
+      color: white;
+      border: 1px solid rgba(129, 140, 248, 0.9);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 20px 55px rgba(79, 70, 229, 0.75);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--text-main);
+    }
+
+    /* Quick stats */
+    .stats-row {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .stats-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .stat-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(15, 23, 42, 0.86));
+      border-radius: 16px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-label {
+      color: var(--text-soft);
+      font-size: 0.75rem;
+    }
+
+    .stat-value {
+      font-family: "Poppins", system-ui;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-strong);
+    }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+    }
+
+    .stat-chip i {
+      font-size: 0.6rem;
+    }
+
+    /* Modules list */
+    .modules-card {
+      margin-top: 4px;
+      background: var(--surface-soft);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 12px;
+      backdrop-filter: blur(12px);
+    }
+
+    .modules-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .modules-title-row h3 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-soft {
+      font-size: 0.72rem;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px dashed rgba(148, 163, 184, 0.46);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 720px) {
+      .modules-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .modules-grid button {
+      border-radius: 12px;
+      padding: 7px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.88);
+      color: var(--text-main);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      cursor: pointer;
+      transition: background var(--transition-fast),
+                  transform var(--transition-fast),
+                  border-color var(--transition-fast),
+                  box-shadow var(--transition-fast);
+    }
+
+    .modules-grid button span {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modules-grid button small {
+      color: var(--text-soft);
+      font-size: 0.72rem;
+    }
+
+    .modules-grid button i {
+      font-size: 0.9rem;
+      color: var(--accent-strong);
+    }
+
+    .modules-grid button:hover {
+      background: rgba(15, 23, 42, 1);
+      border-color: rgba(129, 140, 248, 0.7);
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .welcome-note {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .welcome-note i {
+      color: var(--accent-strong);
+      font-size: 0.8rem;
+    }
+
+    /* Right column: main workspace */
+    .workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .workspace-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .workspace-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .workspace-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .workspace-title span.badge {
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(22, 163, 74, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.28);
+      color: #bbf7d0;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .workspace-sub {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .workspace-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-pill {
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.94);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toolbar-pill i {
+      font-size: 0.78rem;
+      color: var(--accent-strong);
+    }
+
+    /* Module container */
+    .module-area {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      display: grid;
+      grid-template-columns: 1.3fr 1.3fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 960px) {
+      .module-area {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .module-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.18), transparent 60%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .module-card-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .module-header h3 {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .module-header h3 i {
+      font-size: 0.9rem;
+      color: var(--accent-strong);
+    }
+
+    .module-header small {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+    }
+
+    .inline-tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      color: var(--text-soft);
+    }
+
+    .field-group {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .field-group-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 0.78rem;
+    }
+
+    label {
+      color: var(--text-soft);
+    }
+
+    input,
+    select,
+    textarea {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 10px;
+      border: 1px solid rgba(51, 65, 85, 0.95);
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.6);
+      background: rgba(15, 23, 42, 0.98);
+      transform: translateY(-0.5px);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+      max-height: 140px;
+    }
+
+    .module-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .btn-xs {
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-main);
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .btn-xs.primary {
+      background: rgba(99, 102, 241, 0.18);
+      border-color: rgba(129, 140, 248, 0.9);
+    }
+
+    .btn-xs.danger {
+      border-color: rgba(239, 68, 68, 0.8);
+      color: #fecaca;
+    }
+
+    .btn-xs:hover {
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-0.5px);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.9);
+    }
+
+    .result-pill {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      padding: 7px 8px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--text-soft);
+    }
+
+    .result-pill span.primary-text {
+      color: var(--text-strong);
+      font-weight: 500;
+    }
+
+    .result-pill span.good {
+      color: var(--success);
+    }
+
+    .result-pill span.bad {
+      color: var(--danger);
+    }
+
+    /* Lists */
+    .simple-list {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.8rem;
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .simple-item {
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(51, 65, 85, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .simple-item-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .simple-item-main i {
+      font-size: 0.8rem;
+      color: var(--accent-strong);
+    }
+
+    .simple-item small {
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .task-check {
+      width: 15px;
+      height: 15px;
+      border-radius: 5px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .task-done .simple-item-main span {
+      text-decoration: line-through;
+      color: rgba(148, 163, 184, 0.55);
+    }
+
+    .task-done .task-check {
+      border-color: rgba(34, 197, 94, 0.8);
+      color: #22c55e;
+    }
+
+    /* AI suggestion box */
+    .ai-output {
+      margin-top: 4px;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.85;
+    }
+
+    .footer span.highlight {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .footer span.subtle {
+      opacity: 0.7;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+      .app-shell {
+        border-radius: 20px;
+      }
+      .brand-card {
+        padding: 14px;
+      }
+      .module-area {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="app-inner">
+    <!-- LEFT: SIDEBAR / OVERVIEW -->
+    <aside class="sidebar">
+      <section class="brand-card">
+        <div class="brand-header">
+          <div class="logo-badge">
+            <div class="logo-circle">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <span>AI College Companion</span>
+          </div>
+          <div class="theme-toggle">
+            <span><i class="fa-solid fa-moon"></i></span>
+            Dark
+          </div>
+        </div>
+
+        <div class="hero">
+          <p class="hero-kicker">Welcome, Tanvir</p>
+          <h1 class="hero-title">Smart dashboard for your BSc CS journey.</h1>
+          <p class="hero-sub">
+            Track attendance, GPA, timetable, notes and tasks — with a tiny AI brain to nudge your studies in the right direction.
+          </p>
+
+          <div class="hero-tags">
+            <div class="pill">
+              <i class="fa-solid fa-layer-group"></i>
+              Timetable • Attendance • GPA
+            </div>
+            <div class="pill">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              AI Study Suggestions
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn-primary" id="btnGoToTimetable">
+              <i class="fa-regular fa-calendar"></i>
+              Generate timetable
+            </button>
+            <button class="btn-ghost" id="btnGoToAI">
+              <i class="fa-solid fa-robot"></i>
+              Ask AI for a study plan
+            </button>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">Courses this sem</div>
+              <div class="stat-value" id="statCourses">0</div>
+              <div class="stat-chip">
+                <i class="fa-solid fa-circle-dot"></i>
+                Target: 100% clarity
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Notes saved</div>
+              <div class="stat-value" id="statNotes">0</div>
+              <div class="stat-chip">
+                <i class="fa-solid fa-note-sticky"></i>
+                Brain outside the brain
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Tasks open</div>
+              <div class="stat-value" id="statTasks">0</div>
+              <div class="stat-chip">
+                <i class="fa-solid fa-fire"></i>
+                Stay ahead, not behind
+              </div>
+            </div>
+          </div>
+
+          <div class="modules-card">
+            <div class="modules-title-row">
+              <h3>
+                <i class="fa-solid fa-grid-2"></i>
+                Quick modules
+              </h3>
+              <span class="tag-soft">
+                <i class="fa-regular fa-circle-check"></i>
+                Demo-ready for presentation
+              </span>
+            </div>
+
+            <div class="modules-grid">
+              <button data-module="attendance">
+                <span>
+                  <strong>Attendance</strong>
+                  <small>Safe zone tracker</small>
+                </span>
+                <i class="fa-solid fa-clipboard-list"></i>
+              </button>
+
+              <button data-module="gpa">
+                <span>
+                  <strong>GPA / CGPA</strong>
+                  <small>Semester performance</small>
+                </span>
+                <i class="fa-solid fa-chart-line"></i>
+              </button>
+
+              <button data-module="timetable">
+                <span>
+                  <strong>Timetable</strong>
+                  <small>Week at a glance</small>
+                </span>
+                <i class="fa-regular fa-calendar"></i>
+              </button>
+
+              <button data-module="notes">
+                <span>
+                  <strong>Notes</strong>
+                  <small>Mini knowledge base</small>
+                </span>
+                <i class="fa-regular fa-note-sticky"></i>
+              </button>
+
+              <button data-module="tasks">
+                <span>
+                  <strong>Tasks</strong>
+                  <small>Do it before sir asks</small>
+                </span>
+                <i class="fa-regular fa-square-check"></i>
+              </button>
+
+              <button data-module="ai">
+                <span>
+                  <strong>AI Study Tool</strong>
+                  <small>Weak topic → plan</small>
+                </span>
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </button>
+            </div>
+
+            <p class="welcome-note">
+              <i class="fa-solid fa-circle-info"></i>
+              Click any card to open that module on the right. Perfect for showing to faculty as a smart demo dashboard.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span class="highlight">AI College Companion — Demo</span>
+        <span class="subtle">Built by <span class="highlight">Tanvir</span> • Nov 2025</span>
+      </footer>
+    </aside>
+
+    <!-- RIGHT: WORKSPACE / MODULES -->
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="workspace-title-block">
+          <div class="workspace-title">
+            Overview workspace
+            <span class="badge">Interactive demo</span>
+          </div>
+          <p class="workspace-sub">
+            All modules run inside this panel. You can show calculations live while presenting.
+          </p>
+        </div>
+
+        <div class="workspace-toolbar">
+          <div class="toolbar-pill">
+            <i class="fa-regular fa-clock"></i>
+            Auto-save feel (demo only)
+          </div>
+        </div>
+      </header>
+
+      <section class="module-area">
+        <!-- COLUMN 1: Attendance + GPA -->
+        <div class="module-card">
+          <div class="module-card-inner">
+            <!-- ATTENDANCE -->
+            <div class="module-header">
+              <h3>
+                <i class="fa-solid fa-clipboard-list"></i>
+                Attendance Calculator
+              </h3>
+              <small>Calculate % and get suggestion</small>
+            </div>
+
+            <div class="field-group">
+              <div class="field">
+                <label for="attended">Classes attended</label>
+                <input id="attended" type="number" min="0" placeholder="e.g. 32" />
+              </div>
+              <div class="field">
+                <label for="total">Total classes</label>
+                <input id="total" type="number" min="0" placeholder="e.g. 40" />
+              </div>
+            </div>
+
+            <div class="module-actions">
+              <button class="btn-xs primary" id="btnCalcAttendance">
+                <i class="fa-solid fa-calculator"></i>
+                Calculate
+              </button>
+              <button class="btn-xs" id="btnClearAttendance">
+                <i class="fa-solid fa-eraser"></i>
+                Clear
+              </button>
+            </div>
+
+            <div class="result-pill" id="attendanceResult">
+              <span>Result will appear here.</span>
+              <span class="primary-text">–</span>
+            </div>
+
+            <hr style="border: none; border-top: 1px dashed rgba(51,65,85,0.8); margin: 6px 0;" />
+
+            <!-- GPA -->
+            <div class="module-header">
+              <h3>
+                <i class="fa-solid fa-chart-line"></i>
+                GPA / CGPA Calculator
+              </h3>
+              <small>Simple weighted average demo</small>
+            </div>
+
+            <div class="field-group-3">
+              <div class="field">
+                <label for="courseName">Course</label>
+                <input id="courseName" type="text" placeholder="e.g. DSA" />
+              </div>
+              <div class="field">
+                <label for="courseCredits">Credits</label>
+                <input id="courseCredits" type="number" min="0" step="1" placeholder="4" />
+              </div>
+              <div class="field">
+                <label for="courseGrade">Grade (0–10)</label>
+                <input id="courseGrade" type="number" min="0" max="10" step="0.1" placeholder="9" />
+              </div>
+            </div>
+
+            <div class="module-actions">
+              <button class="btn-xs primary" id="btnAddCourse">
+                <i class="fa-solid fa-plus"></i>
+                Add course
+              </button>
+              <button class="btn-xs" id="btnComputeGpa">
+                <i class="fa-solid fa-equals"></i>
+                Compute GPA
+              </button>
+              <button class="btn-xs danger" id="btnClearGpa">
+                <i class="fa-solid fa-trash"></i>
+                Clear list
+              </button>
+            </div>
+
+            <div class="simple-list" id="courseList">
+              <!-- Courses will appear here -->
+              <div class="simple-item">
+                <div class="simple-item-main">
+                  <i class="fa-solid fa-book-open"></i>
+                  <span>No courses added yet.</span>
+                </div>
+                <small>Credits × Grade</small>
+              </div>
+            </div>
+
+            <div class="result-pill" id="gpaResult">
+              <span>CGPA estimate</span>
+              <span class="primary-text">–</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: Timetable / Notes / Tasks / AI -->
+        <div class="module-card">
+          <div class="module-card-inner" id="rightModules">
+            <!-- TIMETABLE -->
+            <div class="module-header">
+              <h3>
+                <i class="fa-regular fa-calendar"></i>
+                Timetable Generator
+              </h3>
+              <small>Keep it minimal but impressive</small>
+            </div>
+
+            <div class="field-group-3">
+              <div class="field">
+                <label for="ttSubject">Subject</label>
+                <input id="ttSubject" type="text" placeholder="e.g. OS" />
+              </div>
+              <div class="field">
+                <label for="ttDay">Day</label>
+                <select id="ttDay">
+                  <option value="">Select</option>
+                  <option>Mon</option>
+                  <option>Tue</option>
+                  <option>Wed</option>
+                  <option>Thu</option>
+                  <option>Fri</option>
+                  <option>Sat</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="ttTime">Time</label>
+                <input id="ttTime" type="text" placeholder="9:00–10:00" />
+              </div>
+            </div>
+
+            <div class="module-actions">
+              <button class="btn-xs primary" id="btnAddSlot">
+                <i class="fa-solid fa-plus"></i>
+                Add slot
+              </button>
+              <button class="btn-xs" id="btnClearTimetable">
+                <i class="fa-solid fa-eraser"></i>
+                Clear
+              </button>
+            </div>
+
+            <div class="simple-list" id="ttList">
+              <div class="simple-item">
+                <div class="simple-item-main">
+                  <i class="fa-regular fa-clock"></i>
+                  <span>No slots yet. Add a few and show it to mam 😄</span>
+                </div>
+                <small>Day • Time</small>
+              </div>
+            </div>
+
+            <!-- NOTES -->
+            <hr style="border: none; border-top: 1px dashed rgba(51,65,85,0.8); margin: 6px 0;" />
+
+            <div class="module-header">
+              <h3>
+                <i class="fa-regular fa-note-sticky"></i>
+                Notes Organizer
+              </h3>
+              <small>Quick memory dumps</small>
+            </div>
+
+            <div class="field">
+              <label for="noteText">Note</label>
+              <textarea id="noteText" placeholder="Short note about a topic, assignment or exam tip..."></textarea>
+            </div>
+
+            <div class="module-actions">
+              <button class="btn-xs primary" id="btnSaveNote">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save note
+              </button>
+              <button class="btn-xs" id="btnClearNotes">
+                <i class="fa-solid fa-trash"></i>
+                Clear all
+              </button>
+            </div>
+
+            <div class="simple-list" id="noteList">
+              <div class="simple-item">
+                <div class="simple-item-main">
+                  <i class="fa-solid fa-lightbulb"></i>
+                  <span>No notes yet. Use this like a mini sticky pad.</span>
+                </div>
+                <small>Pinned locally in this session</small>
+              </div>
+            </div>
+
+            <!-- TASKS -->
+            <hr style="border: none; border-top: 1px dashed rgba(51,65,85,0.8); margin: 6px 0;" />
+
+            <div class="module-header">
+              <h3>
+                <i class="fa-regular fa-square-check"></i>
+                Tasks / Reminders
+              </h3>
+              <small>Because sir will definitely ask 😅</small>
+            </div>
+
+            <div class="field-group">
+              <div class="field">
+                <label for="taskText">Task</label>
+                <input id="taskText" type="text" placeholder="e.g. Submit OS assignment" />
+              </div>
+              <div class="field">
+                <label for="taskWhen">Due</label>
+                <input id="taskWhen" type="text" placeholder="Tomorrow, 8 PM" />
+              </div>
+            </div>
+
+            <div class="module-actions">
+              <button class="btn-xs primary" id="btnAddTask">
+                <i class="fa-solid fa-plus"></i>
+                Add task
+              </button>
+              <button class="btn-xs" id="btnClearTasks">
+                <i class="fa-solid fa-trash"></i>
+                Clear list
+              </button>
+            </div>
+
+            <div class="simple-list" id="taskList">
+              <div class="simple-item">
+                <div class="simple-item-main">
+                  <i class="fa-solid fa-circle-dot"></i>
+                  <span>No tasks yet. Add a few to show the checklist.</span>
+                </div>
+                <small>Click the small box to mark done</small>
+              </div>
+            </div>
+
+            <!-- AI STUDY TOOL -->
+            <hr style="border: none; border-top: 1px dashed rgba(51,65,85,0.8); margin: 6px 0;" />
+
+            <div class="module-header">
+              <h3>
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                AI Study Suggestion
+              </h3>
+              <small>Explain your weak topic in 1–2 lines</small>
+            </div>
+
+            <div class="field">
+              <label for="aiTopic">Weak topic / exam worry</label>
+              <textarea id="aiTopic" placeholder="e.g. I am weak in recursion and get confused in base case and stack frames."></textarea>
+            </div>
+
+            <div class="module-actions">
+              <button class="btn-xs primary" id="btnGetSuggestion">
+                <i class="fa-solid fa-robot"></i>
+                Get friendly plan
+              </button>
+              <button class="btn-xs" id="btnClearSuggestion">
+                <i class="fa-solid fa-eraser"></i>
+                Clear
+              </button>
+            </div>
+
+            <div class="ai-output" id="aiOutput">
+              Your personal AI helper will give a short, realistic study plan here based on the topic you type above.
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+  // --- Small helper ---
+  function textOrDash(value) {
+    return value ? value : "–";
+  }
+
+  // --- Attendance ---
+  const attendedInput = document.getElementById("attended");
+  const totalInput = document.getElementById("total");
+  const attendanceResult = document.getElementById("attendanceResult");
+
+  document.getElementById("btnCalcAttendance").addEventListener("click", () => {
+    const attended = Number(attendedInput.value);
+    const total = Number(totalInput.value);
+
+    if (!total || attended < 0 || total < 0 || attended > total) {
+      attendanceResult.innerHTML = `
+        <span>Check the values again (attended can't be more than total).</span>
+        <span class="primary-text bad">Invalid</span>`;
+      return;
+    }
+
+    const pct = total === 0 ? 0 : (attended / total) * 100;
+    let mood;
+    let moodClass;
+
+    if (pct >= 90) {
+      mood = "Excellent! You are in the absolute safe zone.";
+      moodClass = "good";
+    } else if (pct >= 75) {
+      mood = "Safe for most colleges, but don't start skipping too much.";
+      moodClass = "good";
+    } else if (pct >= 65) {
+      mood = "Careful. Try to attend every class for a while.";
+      moodClass = "bad";
+    } else {
+      mood = "Red zone. Time to attend regularly and talk to faculty if needed.";
+      moodClass = "bad";
+    }
+
+    attendanceResult.innerHTML = `
+      <span>${mood}</span>
+      <span class="primary-text ${moodClass}">${pct.toFixed(1)}%</span>`;
+  });
+
+  document.getElementById("btnClearAttendance").addEventListener("click", () => {
+    attendedInput.value = "";
+    totalInput.value = "";
+    attendanceResult.innerHTML = `
+      <span>Result will appear here.</span>
+      <span class="primary-text">–</span>`;
+  });
+
+  // --- GPA ---
+  const courseNameInput = document.getElementById("courseName");
+  const courseCreditsInput = document.getElementById("courseCredits");
+  const courseGradeInput = document.getElementById("courseGrade");
+  const courseList = document.getElementById("courseList");
+  const gpaResult = document.getElementById("gpaResult");
+  let courses = [];
+
+  function renderCourses() {
+    courseList.innerHTML = "";
+    if (courses.length === 0) {
+      courseList.innerHTML = `
+        <div class="simple-item">
+          <div class="simple-item-main">
+            <i class="fa-solid fa-book-open"></i>
+            <span>No courses added yet.</span>
+          </div>
+          <small>Credits × Grade</small>
+        </div>`;
+      return;
+    }
+
+    courses.forEach((c, idx) => {
+      const li = document.createElement("div");
+      li.className = "simple-item";
+      li.innerHTML = `
+        <div class="simple-item-main">
+          <i class="fa-solid fa-book-open"></i>
+          <span>${c.name} • ${c.credits} credits • Grade: ${c.grade}</span>
+        </div>
+        <small>${(c.credits * c.grade).toFixed(1)}</small>
+      `;
+      li.addEventListener("dblclick", () => {
+        courses.splice(idx, 1);
+        renderCourses();
+      });
+      courseList.appendChild(li);
+    });
+  }
+
+  document.getElementById("btnAddCourse").addEventListener("click", () => {
+    const name = courseNameInput.value.trim() || "Untitled";
+    const credits = Number(courseCreditsInput.value);
+    const grade = Number(courseGradeInput.value);
+
+    if (!credits || grade < 0 || grade > 10) {
+      alert("Enter valid credits and grade (0–10).");
+      return;
+    }
+
+    courses.push({ name, credits, grade });
+    courseNameInput.value = "";
+    courseCreditsInput.value = "";
+    courseGradeInput.value = "";
+    renderCourses();
+  });
+
+  document.getElementById("btnComputeGpa").addEventListener("click", () => {
+    if (courses.length === 0) {
+      gpaResult.innerHTML = `
+        <span>Add at least one course to compute GPA.</span>
+        <span class="primary-text">–</span>`;
+      return;
+    }
+
+    let totalCredits = 0;
+    let weighted = 0;
+
+    courses.forEach((c) => {
+      totalCredits += c.credits;
+      weighted += c.credits * c.grade;
+    });
+
+    const gpa = weighted / totalCredits;
+    let mood;
+    if (gpa >= 9) mood = "🔥 Outstanding! Keep flexing this GPA.";
+    else if (gpa >= 8) mood = "Strong GPA. A bit of push can make it elite.";
+    else if (gpa >= 7) mood = "Decent, but you can level this up.";
+    else mood = "Focus mode ON. Target small improvements each sem.";
+
+    gpaResult.innerHTML = `
+      <span>${mood}</span>
+      <span class="primary-text">${gpa.toFixed(2)}</span>`;
+  });
+
+  document.getElementById("btnClearGpa").addEventListener("click", () => {
+    courses = [];
+    renderCourses();
+    gpaResult.innerHTML = `
+      <span>CGPA estimate</span>
+      <span class="primary-text">–</span>`;
+  });
+
+  // --- Timetable ---
+  const ttSubject = document.getElementById("ttSubject");
+  const ttDay = document.getElementById("ttDay");
+  const ttTime = document.getElementById("ttTime");
+  const ttList = document.getElementById("ttList");
+  let timetableSlots = [];
+
+  function renderTimetable() {
+    ttList.innerHTML = "";
+    if (timetableSlots.length === 0) {
+      ttList.innerHTML = `
+        <div class="simple-item">
+          <div class="simple-item-main">
+            <i class="fa-regular fa-clock"></i>
+            <span>No slots yet. Add a few and show it to mam 😄</span>
+          </div>
+          <small>Day • Time</small>
+        </div>`;
+      return;
+    }
+
+    timetableSlots.forEach((s, idx) => {
+      const row = document.createElement("div");
+      row.className = "simple-item";
+      row.innerHTML = `
+        <div class="simple-item-main">
+          <i class="fa-regular fa-calendar"></i>
+          <span>${s.day} • ${s.time} • ${s.subject}</span>
+        </div>
+        <small>Slot ${idx + 1}</small>
+      `;
+      row.addEventListener("dblclick", () => {
+        timetableSlots.splice(idx, 1);
+        renderTimetable();
+      });
+      ttList.appendChild(row);
+    });
+  }
+
+  document.getElementById("btnAddSlot").addEventListener("click", () => {
+    const subject = ttSubject.value.trim();
+    const day = ttDay.value;
+    const time = ttTime.value.trim();
+
+    if (!subject || !day || !time) {
+      alert("Fill subject, day and time.");
+      return;
+    }
+
+    timetableSlots.push({ subject, day, time });
+    ttSubject.value = "";
+    ttDay.value = "";
+    ttTime.value = "";
+    renderTimetable();
+  });
+
+  document.getElementById("btnClearTimetable").addEventListener("click", () => {
+    timetableSlots = [];
+    renderTimetable();
+  });
+
+  // --- Notes ---
+  const noteText = document.getElementById("noteText");
+  const noteList = document.getElementById("noteList");
+  const statNotes = document.getElementById("statNotes");
+  let notes = [];
+
+  function renderNotes() {
+    noteList.innerHTML = "";
+    if (notes.length === 0) {
+      noteList.innerHTML = `
+        <div class="simple-item">
+          <div class="simple-item-main">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>No notes yet. Use this like a mini sticky pad.</span>
+          </div>
+          <small>Pinned locally in this session</small>
+        </div>`;
+    } else {
+      notes.forEach((n, idx) => {
+        const row = document.createElement("div");
+        row.className = "simple-item";
+        row.innerHTML = `
+          <div class="simple-item-main">
+            <i class="fa-regular fa-note-sticky"></i>
+            <span>${n}</span>
+          </div>
+          <small>Note ${idx + 1}</small>
+        `;
+        row.addEventListener("dblclick", () => {
+          notes.splice(idx, 1);
+          renderNotes();
+          statNotes.textContent = notes.length;
+        });
+        noteList.appendChild(row);
+      });
+    }
+    statNotes.textContent = notes.length;
+  }
+
+  document.getElementById("btnSaveNote").addEventListener("click", () => {
+    const text = noteText.value.trim();
+    if (!text) {
+      alert("Type a note first.");
+      return;
+    }
+    notes.unshift(text);
+    noteText.value = "";
+    renderNotes();
+  });
+
+  document.getElementById("btnClearNotes").addEventListener("click", () => {
+    notes = [];
+    renderNotes();
+  });
+
+  // --- Tasks ---
+  const taskText = document.getElementById("taskText");
+  const taskWhen = document.getElementById("taskWhen");
+  const taskList = document.getElementById("taskList");
+  const statTasks = document.getElementById("statTasks");
+  let tasks = [];
+
+  function renderTasks() {
+    taskList.innerHTML = "";
+    if (tasks.length === 0) {
+      taskList.innerHTML = `
+        <div class="simple-item">
+          <div class="simple-item-main">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>No tasks yet. Add a few to show the checklist.</span>
+          </div>
+          <small>Click the small box to mark done</small>
+        </div>`;
+      statTasks.textContent = 0;
+      return;
+    }
+
+    tasks.forEach((t, idx) => {
+      const row = document.createElement("div");
+      row.className = "simple-item" + (t.done ? " task-done" : "");
+      row.innerHTML = `
+        <div class="simple-item-main">
+          <div class="task-check">${t.done ? "✓" : ""}</div>
+          <span>${t.text}</span>
+        </div>
+        <small>${textOrDash(t.when)}</small>
+      `;
+
+      row.querySelector(".task-check").addEventListener("click", () => {
+        tasks[idx].done = !tasks[idx].done;
+        renderTasks();
+      });
+
+      row.addEventListener("dblclick", () => {
+        tasks.splice(idx, 1);
+        renderTasks();
+      });
+
+      taskList.appendChild(row);
+    });
+
+    const openCount = tasks.filter((t) => !t.done).length;
+    statTasks.textContent = openCount;
+  }
+
+  document.getElementById("btnAddTask").addEventListener("click", () => {
+    const text = taskText.value.trim();
+    const when = taskWhen.value.trim();
+    if (!text) {
+      alert("Task can't be empty.");
+      return;
+    }
+    tasks.unshift({ text, when, done: false });
+    taskText.value = "";
+    taskWhen.value = "";
+    renderTasks();
+  });
+
+  document.getElementById("btnClearTasks").addEventListener("click", () => {
+    tasks = [];
+    renderTasks();
+  });
+
+  // --- AI Study Suggestion (simple prompt logic) ---
+  const aiTopic = document.getElementById("aiTopic");
+  const aiOutput = document.getElementById("aiOutput");
+
+  document.getElementById("btnGetSuggestion").addEventListener("click", () => {
+    const topic = aiTopic.value.trim() || "the topic";
+
+    const plan = [
+      `Here’s a realistic 5-step plan for you, Tanvir 👇`,
+      ``,
+      `1) Crystal-clear basics (Day 1–2)`,
+      `   • Watch a 20–30 min YouTube video on ${topic} (pick 1, not 10).`,
+      `   • Pause and write your own 5–7 line summary in your own words.`,
+      ``,
+      `2) Tiny examples (Day 2–3)`,
+      `   • Solve 3 very small problems ONLY on ${topic}.`,
+      `   • After every question, write: “What was the main idea here?”`,
+      ``,
+      `3) College connection (Day 3–4)`,
+      `   • Check class notes / textbook and mark all ${topic} related questions.`,
+      `   • Star the ones which are most likely to come in exam.`,
+      ``,
+      `4) Active recall (Daily 15 mins)`,
+      `   • Close your notebook and explain ${topic} out loud as if you are teaching your friend.`,
+      `   • If you get stuck, open notes, fix that doubt, and try again.`,
+      ``,
+      `5) Pre-exam sprint (Last 1–2 days)`,
+      `   • Solve only previous year or teacher-style questions.`,
+      `   • Ignore rare tricky stuff; focus on scoring questions first.`,
+      ``,
+      `If you follow this honestly for even 3–4 days, your confidence in "${topic}" will go up a lot.`
+    ].join("\n");
+
+    aiOutput.textContent = plan;
+  });
+
+  document.getElementById("btnClearSuggestion").addEventListener("click", () => {
+    aiTopic.value = "";
+    aiOutput.textContent =
+      "Your personal AI helper will give a short, realistic study plan here based on the topic you type above.";
+  });
+
+  // --- Quick module buttons on left side ---
+  document.querySelectorAll(".modules-grid button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const module = btn.dataset.module;
+      // For now we just scroll right side into view.
+      document.querySelector(".module-area").scrollIntoView({ behavior: "smooth" });
+
+      if (module === "attendance") {
+        attendedInput.focus();
+      } else if (module === "gpa") {
+        courseNameInput.focus();
+      } else if (module === "timetable") {
+        ttSubject.focus();
+      } else if (module === "notes") {
+        noteText.focus();
+      } else if (module === "tasks") {
+        taskText.focus();
+      } else if (module === "ai") {
+        aiTopic.focus();
+      }
+    });
+  });
+
+  // Hero buttons
+  document.getElementById("btnGoToTimetable").addEventListener("click", () => {
+    document.querySelector(".module-area").scrollIntoView({ behavior: "smooth" });
+    ttSubject.focus();
+  });
+
+  document.getElementById("btnGoToAI").addEventListener("click", () => {
+    document.querySelector(".module-area").scrollIntoView({ behavior: "smooth" });
+    aiTopic.focus();
+  });
+
+  // Initial render
+  renderCourses();
+  renderTimetable();
+  renderNotes();
+  renderTasks();
+
+  // Courses stat: in this demo, we just mirror number of entries
+  const statCourses = document.getElementById("statCourses");
+  const originalRenderCourses = renderCourses;
+  renderCourses = function () {
+    originalRenderCourses();
+    statCourses.textContent = courses.length;
+  };
+  // call once again to sync stat after override
+  renderCourses();
+</script>
+
+</body>
+</html>
